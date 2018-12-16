@@ -1,0 +1,287 @@
+---
+version: 2.1
+
+executors:
+  python:
+    parameters:
+      tag:
+        type: string
+        default: '3.8'
+    working_directory: ~/build
+    docker:
+      - image: python:<< parameters.tag >>
+  docker:
+    working_directory: /app
+    docker:
+      - image: docker:stable-git
+  alpine:
+    working_directory: /app
+    docker:
+      - image: alpine
+
+commands:
+  setup:
+    description: Setup environment
+    parameters:
+      is_alpine:
+        type: boolean
+        default: false
+    steps:
+      - when:
+          condition: << parameters.is_alpine >>
+          steps:
+            - run:
+                name: Install Alpine Linux build dependencies
+                command: apk add --no-cache ca-certificates curl gcc git make musl-dev openssh-client openssl-dev libffi-dev
+      - run:
+          name: Install Poetry
+          command: |
+            export POETRY_VERSION=1.0.5
+            export POETRY_HOME=$HOME/.local/share/poetry
+            export PATH=$HOME/.local/share/poetry/bin:$PATH
+            mkdir -p $POETRY_HOME
+            curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+            poetry --version
+      - checkout
+      - when:
+          condition: << parameters.is_alpine >>
+          steps:
+            - run:
+                name: Save Alpine Linux version
+                command: |
+                  echo "alpine: $(cat /etc/alpine-release)" >> .versions
+      - run:
+          name: Save Python and Poetry versions
+          command: |
+            export PATH=$HOME/.local/share/poetry/bin:$PATH
+            echo "python: ${PYTHON_VERSION}" >> .versions
+            echo "poetry: $(poetry --version)" >> .versions
+            cat .versions
+  install:
+    description: Install dependencies
+    parameters:
+      save_cache:
+        type: boolean
+        default: true
+    steps:
+      - restore_cache:
+          key: poetry-cache-{{ arch }}-{{ checksum ".versions" }}-
+      - run:
+          name: Install dependencies
+          command: |
+            export PATH=$HOME/.local/share/poetry/bin:$PATH
+            poetry install
+      - when:
+          condition: << parameters.save_cache >>
+          steps:
+            - save_cache:
+                key: poetry-cache-{{ arch }}-{{ checksum ".versions" }}-{{ epoch }}
+                paths:
+                  - ~/.cache/pip
+                  - ~/.cache/pypoetry
+jobs:
+  test:
+    description: Test Python package
+    parameters:
+      tag:
+        type: string
+        default: '3.8'
+      is_alpine:
+        type: boolean
+        default: false
+      upload_coverage:
+        type: boolean
+        default: false
+    executor:
+      name: python
+      tag: << parameters.tag >>
+    steps:
+      - setup:
+          is_alpine: << parameters.is_alpine >>
+      - install
+      - run:
+          name: Test package
+          command: |
+            export PATH=$HOME/.local/share/poetry/bin:$PATH
+            make test
+      - run:
+          name: Build package
+          command: |
+            export PATH=$HOME/.local/share/poetry/bin:$PATH
+            make build
+      - when:
+          condition: << parameters.upload_coverage >>
+          steps:
+            - run:
+                name: Upload coverage to Codecov
+                command: |
+                  export PATH=$HOME/.local/share/poetry/bin:$PATH
+                  if [[ -n "${CODECOV_TOKEN}" ]]; then
+                    poetry add --dev codecov
+                    poetry run codecov
+                  fi
+  publish:
+    description: Publish Python package
+    executor:
+      name: python
+      tag: '3.8'
+    steps:
+      - setup
+      - install
+      - run:
+          name: Build package
+          command: |
+            export PATH=$HOME/.local/share/poetry/bin:$PATH
+            make build
+      - deploy:
+          name: Publish package
+          command: |
+            export PATH=$HOME/.local/share/poetry/bin:$PATH
+            make publish
+  package:
+    description: Build Python package
+    executor:
+      name: python
+      tag: '3.8'
+    steps:
+      - setup
+      - install
+      - run:
+          name: Build package
+          command: |
+            export PATH=$HOME/.local/share/poetry/bin:$PATH
+            make build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+  push:
+    description: Build and push Docker container
+    parameters:
+      is_ci:
+        type: boolean
+        default: false
+    executor:
+      name: docker
+    environment:
+      APP_NAME: 'python/app'
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - setup_remote_docker:
+          version: 18.09.3
+          docker_layer_caching: false
+      - run:
+          name: Install build dependencies
+          command: apk add --no-cache bash
+      - run:
+          name: Move dist to working directory
+          command: mv /tmp/workspace/dist .
+      - run:
+          name: Create pyproject.toml.tmp
+          command: |
+            sed 's/^version = ".*"$/version = "0.0.0"/g' pyproject.toml > pyproject.toml.tmp
+      - run:
+          name: Build Docker image
+          command: |
+            docker build --tag $APP_NAME \
+              -f .circleci/Dockerfile .
+      - deploy:
+          name: Push Docker image to Docker Hub
+          command: |
+            if [[ -n "${DOCKERHUB_REPOSITORY}" ]]; then
+              .circleci/push-dockerhub.sh
+            fi
+      - when:
+          unless: << parameters.is_ci >>
+          steps:
+            - deploy:
+                name: Push Docker image to Bintray
+                command: |
+                  if [[ -n "${BINTRAY_REPOSITORY}" ]]; then
+                    .circleci/push-bintray.sh
+                  fi
+            - deploy:
+                name: Push Docker image to ECR
+                command: |
+                  if [[ -n "${AWS_ECR_REPOSITORY}" ]]; then
+                    .circleci/push-ecr.sh
+                  fi
+            - deploy:
+                name: Push Docker image to Heroku
+                command: |
+                  if [[ -n "${HEROKU_APP}" ]]; then
+                    .circleci/push-heroku.sh
+                  fi
+  server:
+    description: Smoke test Server
+    working_directory: ~/build
+    docker:
+      - image: python:3.8
+      - image: $DOCKERHUB_REPOSITORY:ci.$CIRCLE_SHA1
+        environment:
+          PORT: 9001
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - setup
+      - install
+      - run:
+          name: Test server
+          command: make smoketest
+  deploy:
+    executor:
+      name: alpine
+    steps:
+      - run:
+          name: Install build dependencies
+          command: apk add --no-cache ca-certificates bash
+      - deploy:
+          name: Deploy
+          command: .circleci/deploy.sh
+
+references:
+  branches: &branches
+    only: /^(v(er)?\/?[0-9].*|master)/
+  push_or_publish: &push_or_publish
+    filters:
+      branches:
+        <<: *branches
+    requires:
+      - test
+      - test-alpine
+      - test-server
+
+workflows:
+  default:
+    jobs:
+      - test:
+          name: test
+          tag: '3.8'
+          upload_coverage: true
+      - test:
+          name: test-alpine
+          tag: '3.8-alpine'
+          is_alpine: true
+      - package
+      - push:
+          name: push-ci
+          requires:
+            - package
+          is_ci: true
+      - server:
+          name: test-server
+          requires:
+            - push-ci
+      - publish:
+          <<: *push_or_publish
+      - push:
+          <<: *push_or_publish
+      - deploy:
+          filters:
+            branches:
+              <<: *branches
+          requires:
+            - push
