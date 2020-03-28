@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "makenew-python-app"
-version = "0.1.0"
+version = "0.1.1"
 description = "Package skeleton for a python app."
 authors = ["Evan Sosenko <razorx@evansosenko.com>"]
 license = "MIT"
@@ -12,7 +12,7 @@ include = ['poetry.lock']
 [tool.poetry.dependencies]
 python = "3.8.2"
 tornado = "^6.0.4"
-structlog = "^20.1.0"
+structlog = "^20.1.1"
 pinject = "^0.14.1"
 
 [tool.poetry.dev-dependencies]
