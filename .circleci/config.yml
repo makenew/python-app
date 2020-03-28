@@ -251,6 +251,7 @@ references:
     only: /^(v(er)?\/?[0-9].*|master)/
   push_or_publish: &push_or_publish
     filters:
+      <<: *version_tags
       branches:
         <<: *branches
     requires:
