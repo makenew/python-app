@@ -243,6 +243,9 @@ jobs:
           command: .circleci/deploy.sh
 
 references:
+  version_tags: &version_tags
+    tags:
+      only: /^v.*/
   branches: &branches
     only: /^(v(er)?\/?[0-9].*|master)/
   push_or_publish: &push_or_publish
