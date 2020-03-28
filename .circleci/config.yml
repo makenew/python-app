@@ -249,6 +249,9 @@ references:
       only: /^v.*/
   branches: &branches
     only: /^(v(er)?\/?[0-9].*|master)/
+  filters: &filters
+    filters:
+      <<: *version_tags
   push_or_publish: &push_or_publish
     filters:
       <<: *version_tags
@@ -266,20 +269,25 @@ workflows:
           name: test
           tag: '3.8'
           upload_coverage: true
+          <<: *filters
       - test:
           name: test-alpine
           tag: '3.8-alpine'
           is_alpine: true
-      - package
+          <<: *filters
+      - package:
+          <<: *filters
       - push:
           name: push-ci
           requires:
             - package
           is_ci: true
+          <<: *filters
       - server:
           name: test-server
           requires:
             - push-ci
+          <<: *filters
       - publish:
           <<: *push_or_publish
           filters:
