@@ -277,6 +277,10 @@ workflows:
             - push-ci
       - publish:
           <<: *push_or_publish
+          filters:
+            branches:
+              ignore: /.*/
+            <<: *version_tags
       - push:
           <<: *push_or_publish
       - deploy:
