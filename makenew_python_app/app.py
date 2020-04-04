@@ -8,31 +8,31 @@ class App(Application):
 
 class AppHandlers():
     def __init__(self):
-        self.__handlers = [
+        self._handlers = [
             (r"/health", HealthHandler),
         ]
 
     def get(self):
-        return self.__handlers
+        return self._handlers
 
 class AppSettings():
     def __init__(self, log, flags):
-        self.__log = log
-        self.__settings = dict(
+        self._log = log
+        self._settings = dict(
             debug=flags,
-            log_function=self.__log_function
+            log_function=self._log_function
         )
 
     def get(self):
-        return self.__settings
+        return self._settings
 
-    def __log_function(self, handler):
+    def _log_function(self, handler):
         if handler.get_status() < 400:
-            log_method = self.__log.info
+            log_method = self._log.info
         elif handler.get_status() < 500:
-            log_method = self.__log.warning
+            log_method = self._log.warning
         else:
-            log_method = self.__log.error
+            log_method = self._log.error
 
         request_time = 1000.0 * handler.request.request_time()
 

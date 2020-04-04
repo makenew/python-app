@@ -11,13 +11,13 @@ from tornado.options import define, options
 
 class Server():
     def __init__(self, create_dependencies, config_path):
-        self.__config_factory = ConfigFactory(config_path)
-        self.__create_dependencies = create_dependencies
+        self._config_factory = ConfigFactory(config_path)
+        self._create_dependencies = create_dependencies
 
     def run(self):
-        config = self.__get_config()
+        config = self._get_config()
         log = create_logger(config.get('env') == 'production')
-        dependencies = self.__create_dependencies(config, log)
+        dependencies = self._create_dependencies(config, log)
 
         app = dependencies.app
         log = dependencies.log
@@ -30,21 +30,21 @@ class Server():
         ioloop.IOLoop.instance().start()
 
     def update_config_factory(self, configure):
-        self.__config_factory = configure(self.__config_factory)
+        self._config_factory = configure(self._config_factory)
 
-    def __get_config(self):
-        return self.__config_factory.create()
+    def _get_config(self):
+        return self._config_factory.create()
 
 class ConfigFactory():
     def __init__(self, config_path):
-        self.__config = {}
+        self._config = {}
         pass
 
     def update(self, key, value):
-        self.__config[key] = value
+        self._config[key] = value
 
     def create(self):
-        return self.__config
+        return self._config
 
 def create_logger(is_prod):
     if (is_prod):
