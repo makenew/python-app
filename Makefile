@@ -7,8 +7,12 @@ build:
 clean:
 	@rm -rf .pytest-incremental
 
+format:
+	@poetry run black .
+
 lint:
 	@poetry run pylint ./makenew_python_app
+	@poetry run black --check .
 
 server:
 	@poetry run python -m makenew_python_app
