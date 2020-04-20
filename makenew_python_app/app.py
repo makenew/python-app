@@ -1,12 +1,14 @@
 from tornado.web import Application, RequestHandler
 
+
 class App(Application):
     def __init__(self, log, app_handlers, app_settings):
         handlers = app_handlers.get()
         settings = app_settings.get()
         super().__init__(handlers=app_handlers.get(), **settings)
 
-class AppHandlers():
+
+class AppHandlers:
     def __init__(self):
         self._handlers = [
             (r"/health", HealthHandler),
@@ -15,13 +17,11 @@ class AppHandlers():
     def get(self):
         return self._handlers
 
-class AppSettings():
+
+class AppSettings:
     def __init__(self, log, flags):
         self._log = log
-        self._settings = dict(
-            debug=flags,
-            log_function=self._log_function
-        )
+        self._settings = dict(debug=flags, log_function=self._log_function)
 
     def get(self):
         return self._settings
@@ -42,7 +42,8 @@ class AppSettings():
             req_time=request_time,
         )
 
+
 class HealthHandler(RequestHandler):
     def get(self):
-        self.write({'healthy': True})
+        self.write({"healthy": True})
         self.flush()
