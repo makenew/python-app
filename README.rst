@@ -37,6 +37,7 @@ Features
 - Centralized dependency injection with pinject_.
 - Tornado_ with asyncio.
 - Linting with Pylint_.
+- Uncompromising code formatting with Black_.
 - pytest_ helps you write better programs.
 - Code coverage reporting with Codecov_.
 - Continuous unit and smoke testing and deployment with CircleCI_.
@@ -47,6 +48,7 @@ Features
 .. _Alpine Linux: https://alpinelinux.org/
 .. _Amazon EC2 Container Registry (ECR): https://aws.amazon.com/ecr/
 .. _Bintray: https://bintray.com/
+.. _Black: https://black.readthedocs.io/en/stable/
 .. _Codecov: https://codecov.io/
 .. _Docker Hub: https://hub.docker.com/
 .. _Docker: https://www.docker.com/
