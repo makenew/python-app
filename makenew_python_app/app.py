@@ -21,7 +21,7 @@ class AppHandlers:
 class AppSettings:
     def __init__(self, log, flags):
         self._log = log
-        self._settings = dict(debug=flags, log_function=self._log_function)
+        self._settings = dict(debug=flags["debug"], log_function=self._log_function)
 
     def get(self):
         return self._settings
