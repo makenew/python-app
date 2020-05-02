@@ -22,13 +22,16 @@ class Server:
 
         app = dependencies.app
         log = dependencies.log
+        lifecycle = dependencies.lifecycle
 
         server = create_server(config, app, log)
 
         log.info("Initialize: Start")
         log.info(f"Server: http://localhost:{options.port}")
+        io_loop = ioloop.IOLoop.instance()
+        lifecycle.on_start()
+        io_loop.start()
         log.info("Startup: Success")
-        ioloop.IOLoop.instance().start()
 
     def update_config_factory(self, configure):
         self._config_factory = configure(self._config_factory)

@@ -1,6 +1,7 @@
 from pinject import BindingSpec, new_object_graph, copy_args_to_public_fields
 
 from .app import App, AppHandlers, AppSettings
+from .lifecycle import Lifecycle
 
 
 def create_dependencies(config, log):
@@ -20,6 +21,7 @@ def create_dependencies(config, log):
         App,
         AppHandlers,
         AppSettings,
+        Lifecycle,
     ]
 
     obj_graph = new_object_graph(
@@ -31,5 +33,5 @@ def create_dependencies(config, log):
 
 class Dependencies:
     @copy_args_to_public_fields
-    def __init__(self, app, log):
+    def __init__(self, app, lifecycle, log):
         pass
