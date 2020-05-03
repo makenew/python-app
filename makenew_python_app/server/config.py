@@ -24,7 +24,7 @@ def app_config(config_factory):  # pylint: disable=unused-argument
 def log_config(config_factory):
     config = {
         "camelize": environ.get("LOG_CAMELIZE") == "true",
-        "level": environ.get("LOG_LEVEL"),
+        "level": environ.get("LOG_LEVEL") or "info",
         "service": environ.get("LOG_SERVICE"),
         "system": environ.get("LOG_SYSTEM"),
         "env": environ.get("LOG_SERVICE"),

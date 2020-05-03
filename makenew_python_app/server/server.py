@@ -1,3 +1,4 @@
+import logging
 import sys
 import asyncio
 import signal
@@ -37,7 +38,7 @@ class Server:
         try:
             lifecycle.on_start()
         except BaseException as err:  # pylint: disable=broad-except
-            lifecycle_log.exception(err)
+            lifecycle_log.critical("On Start: Fail", exc_info=err, stack_info=True)
             sys.exit(2)
 
         io_loop.start()
@@ -68,23 +69,31 @@ def create_logger(is_prod, log_config):
         return rapidjson.dumps(data)
 
     processors = [
-        structlog.dev.set_exc_info,
         structlog.stdlib.add_log_level,
+        structlog.processors.format_exc_info,
         structlog.processors.TimeStamper(fmt="iso"),
-        structlog.dev.ConsoleRenderer(colors=True)
+        structlog.dev.ConsoleRenderer(colors=True),
     ]
 
     if is_prod:
         processors = [
+            structlog.stdlib.filter_by_level,
             structlog.stdlib.add_log_level,
             structlog.stdlib.add_log_level_number,
+            structlog.processors.StackInfoRenderer(),
             structlog.processors.format_exc_info,
             structlog.processors.UnicodeDecoder(),
             structlog.processors.TimeStamper(utc=True, key="time"),
             structlog.processors.JSONRenderer(serializer=log_serializer),
         ]
 
-    structlog.configure(processors=processors)
+    logging.basicConfig(format="%(message)s", level=log_config.get("level").upper())
+
+    structlog.configure(
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        cache_logger_on_first_use=True,
+        processors=processors,
+    )
 
     log = get_logger()
     log_props = get_log_props(is_prod, log_config)
@@ -163,7 +172,7 @@ def handle_signal(server, log, sig, frame):  # pylint: disable=unused-argument
             deadline = time.time() + options.shutdown_delay
             stop_loop(server, deadline)
         except BaseException as err:  # pylint: disable=broad-except
-            log.exception(err)
+            log.critical("Shutdown: Fail", exc_info=err, stack_info=True)
             sys.exit(1)
 
     io_loop.add_callback_from_signal(shutdown)
