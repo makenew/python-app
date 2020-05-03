@@ -37,7 +37,7 @@ class Server:
         try:
             lifecycle.on_start()
         except BaseException as err:  # pylint: disable=broad-except
-            lifecycle_log.critical(err)
+            lifecycle_log.exception(err)
             sys.exit(2)
 
         io_loop.start()
@@ -67,10 +67,16 @@ def create_logger(is_prod, log_config):
             return rapidjson.dumps(camelize(data))
         return rapidjson.dumps(data)
 
-    processors = [structlog.dev.ConsoleRenderer(colors=True)]
+    processors = [
+        structlog.dev.set_exc_info,
+        structlog.stdlib.add_log_level,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.dev.ConsoleRenderer(colors=True)
+    ]
 
     if is_prod:
         processors = [
+            structlog.stdlib.add_log_level,
             structlog.stdlib.add_log_level_number,
             structlog.processors.format_exc_info,
             structlog.processors.UnicodeDecoder(),
@@ -157,7 +163,7 @@ def handle_signal(server, log, sig, frame):  # pylint: disable=unused-argument
             deadline = time.time() + options.shutdown_delay
             stop_loop(server, deadline)
         except BaseException as err:  # pylint: disable=broad-except
-            log.critical(err)
+            log.exception(err)
             sys.exit(1)
 
     io_loop.add_callback_from_signal(shutdown)
