@@ -17,21 +17,23 @@ class Server:
 
     def run(self):
         config = self._get_config()
-        log = create_logger(config.get("env") == "production")
+        log = create_logger(config.get("env") == "production", config.get("log"))
         dependencies = self._create_dependencies(config, log)
+
+        lifecycle_log = log.bind(is_lifecycle_log=True, is_app_log=False)
 
         app = dependencies.app
         log = dependencies.log
         lifecycle = dependencies.lifecycle
 
-        server = create_server(config, app, log)
+        server = create_server(config, app, lifecycle_log)
 
-        log.info("Initialize: Start")
-        log.info(f"Server: http://localhost:{options.port}")
+        lifecycle_log.info("Initialize: Start")
+        lifecycle_log.info(f"Server: http://localhost:{options.port}")
         io_loop = ioloop.IOLoop.instance()
         lifecycle.on_start()
         io_loop.start()
-        log.info("Startup: Success")
+        lifecycle_log.info("Startup: Success")
 
     def update_config_factory(self, configure):
         self._config_factory = configure(self._config_factory)
@@ -52,12 +54,25 @@ class ConfigFactory:
         return self._config
 
 
-def create_logger(is_prod):
+def create_logger(is_prod, log_config):
     if is_prod:
         structlog.configure(processors=[structlog.processors.JSONRenderer()])
 
     log = get_logger()
-    return log
+    log_props = get_log_props(is_prod, log_config)
+    return log.bind(**log_props)
+
+
+def get_log_props(is_prod, log_config):
+    if not is_prod:
+        return {}
+    return {
+        "@service": log_config.get("service"),
+        "@system": log_config.get("system"),
+        "@env": log_config.get("env"),
+        "version": log_config.get("version"),
+        "is_app_log": True,
+    }
 
 
 def create_server(config, app, log):

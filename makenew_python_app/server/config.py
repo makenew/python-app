@@ -2,6 +2,7 @@ from os import environ
 
 
 def configure(config_factory):
+    log_config(config_factory)
     server_config(config_factory)
     app_config(config_factory)
     return config_factory
@@ -18,3 +19,14 @@ def server_config(config_factory):
 
 def app_config(config_factory):
     pass
+
+
+def log_config(config_factory):
+    config = {
+        "level": environ.get("LOG_LEVEL"),
+        "service": environ.get("LOG_SERVICE"),
+        "system": environ.get("LOG_SYSTEM"),
+        "env": environ.get("LOG_SERVICE"),
+        "version": environ.get("LOG_VERSION"),
+    }
+    config_factory.update("log", config)

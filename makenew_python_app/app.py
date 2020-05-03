@@ -20,7 +20,7 @@ class AppHandlers:
 
 class AppSettings:
     def __init__(self, log, flags):
-        self._log = log
+        self._log = log.bind(is_request_log=True, is_app_log=False)
         self._settings = dict(debug=flags["debug"], log_function=self._log_function)
 
     def get(self):
