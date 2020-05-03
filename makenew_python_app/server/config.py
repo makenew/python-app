@@ -28,6 +28,7 @@ def log_config(config_factory):
         "service": environ.get("LOG_SERVICE"),
         "system": environ.get("LOG_SYSTEM"),
         "env": environ.get("LOG_SERVICE"),
+        "name": environ.get("LOG_NAME"),
         "version": environ.get("LOG_VERSION"),
     }
     config_factory.update("log", config)
