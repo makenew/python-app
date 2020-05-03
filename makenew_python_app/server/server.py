@@ -5,6 +5,7 @@ import time
 from functools import partial
 
 import rapidjson
+from humps import camelize
 import structlog
 from structlog import get_logger
 from tornado import ioloop, httpserver
@@ -55,10 +56,15 @@ class ConfigFactory:
 
 
 def create_logger(is_prod, log_config):
+    def log_serializer(data, **kw_args):
+        if log_config.get("camelize"):
+            return rapidjson.dumps(camelize(data))
+        return rapidjson.dumps(data)
+
     if is_prod:
-        structlog.configure(processors=[
-            structlog.processors.JSONRenderer(serializer=rapidjson.dumps)
-        ])
+        structlog.configure(
+            processors=[structlog.processors.JSONRenderer(serializer=log_serializer)]
+        )
 
     log = get_logger()
     log_props = get_log_props(is_prod, log_config)
