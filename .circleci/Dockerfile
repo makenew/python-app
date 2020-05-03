@@ -16,6 +16,7 @@ ENV PIP_DEFAULT_TIMEOUT=100 \
 RUN apk add --no-cache \
       ca-certificates \
       curl \
+      g++ \
       gcc \
       git \
       make \
