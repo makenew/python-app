@@ -33,7 +33,13 @@ class Server:
         lifecycle_log.info("Initialize: Start")
         lifecycle_log.info(f"Server: http://localhost:{options.port}")
         io_loop = ioloop.IOLoop.instance()
-        lifecycle.on_start()
+
+        try:
+            lifecycle.on_start()
+        except BaseException as err:  # pylint: disable=broad-except
+            lifecycle_log.fatal(err)
+            sys.exit(2)
+
         io_loop.start()
         lifecycle_log.info("Startup: Success")
 
