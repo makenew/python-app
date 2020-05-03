@@ -72,7 +72,7 @@ def create_logger(is_prod, log_config):
         structlog.stdlib.add_log_level,
         structlog.processors.format_exc_info,
         structlog.processors.TimeStamper(fmt="iso"),
-        structlog.dev.ConsoleRenderer(colors=True),
+        structlog.dev.ConsoleRenderer(),
     ]
 
     if is_prod:
