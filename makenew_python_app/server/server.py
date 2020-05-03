@@ -4,6 +4,7 @@ import signal
 import time
 from functools import partial
 
+import rapidjson
 import structlog
 from structlog import get_logger
 from tornado import ioloop, httpserver
@@ -55,7 +56,9 @@ class ConfigFactory:
 
 def create_logger(is_prod, log_config):
     if is_prod:
-        structlog.configure(processors=[structlog.processors.JSONRenderer()])
+        structlog.configure(processors=[
+            structlog.processors.JSONRenderer(serializer=rapidjson.dumps)
+        ])
 
     log = get_logger()
     log_props = get_log_props(is_prod, log_config)
