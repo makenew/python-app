@@ -8,6 +8,7 @@ extension-pkg-whitelist=
 [MESSAGES CONTROL]
 
 disable=
+    bad-continuation,
     missing-class-docstring,
     missing-function-docstring,
     missing-module-docstring,

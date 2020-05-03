@@ -63,7 +63,7 @@ class ConfigFactory:
 
 
 def create_logger(is_prod, log_config):
-    def log_serializer(data, **kw_args):
+    def log_serializer(data, **kw_args):  # pylint: disable=unused-argument
         if log_config.get("camelize"):
             return rapidjson.dumps(camelize(data))
         return rapidjson.dumps(data)

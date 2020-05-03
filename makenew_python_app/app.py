@@ -9,9 +9,10 @@ class App(Application):
 
 
 class AppHandlers:
-    def __init__(self):
+    def __init__(self, flags, log):
+        opts = dict(flags=flags, log=log)
         self._handlers = [
-            (r"/health", HealthHandler),
+            (r"/health", HealthHandler, opts),
         ]
 
     def get(self):
@@ -43,7 +44,20 @@ class AppSettings:
         )
 
 
-class HealthHandler(RequestHandler):
+class ExceptionHandler:
+    def log_exception(
+        self, exc_type, exc_info, trace_back
+    ):  # pylint: disable=unused-argument
+        if getattr(self, "_logger"):
+            self._logger.error(  # pylint: disable=no-member
+                "Request: Error", exc_info=exc_info, stack_info=True
+            )
+
+
+class HealthHandler(ExceptionHandler, RequestHandler):
+    def initialize(self, flags, log):  # pylint: disable=unused-argument
+        self._logger = log  # pylint: disable=attribute-defined-outside-init
+
     def data_received(self, chunk):
         pass
 
