@@ -6,6 +6,10 @@ ENV PYTHONFAULTHANDLER=1 \
     PYTHONHASHSEED=random \
     PYTHONUNBUFFERED=1
 
+RUN apk add --no-cache \
+      ca-certificates \
+      libstdc++
+
 FROM base as poetry
 
 ENV PIP_DEFAULT_TIMEOUT=100 \
@@ -44,8 +48,7 @@ RUN /opt/venv/bin/pip install dist/*.whl
 
 FROM base
 
-RUN apk add --no-cache ca-certificates \
- && addgroup -g 1000 python \
+RUN addgroup -g 1000 python \
  && adduser -D -G python -u 1000 python
 
 COPY --from=install /opt/venv /opt/venv
