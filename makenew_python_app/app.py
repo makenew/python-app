@@ -2,10 +2,10 @@ from tornado.web import Application, RequestHandler
 
 
 class App(Application):
-    def __init__(self, log, app_handlers, app_settings):
+    def __init__(self, app_handlers, app_settings):
         handlers = app_handlers.get()
         settings = app_settings.get()
-        super().__init__(handlers=app_handlers.get(), **settings)
+        super().__init__(handlers=handlers, **settings)
 
 
 class AppHandlers:
@@ -37,13 +37,16 @@ class AppSettings:
         request_time = 1000.0 * handler.request.request_time()
 
         log_method(
-            handler._request_summary(),
+            handler._request_summary(),  # pylint: disable=protected-access
             req_status=handler.get_status(),
             req_time=request_time,
         )
 
 
 class HealthHandler(RequestHandler):
+    def data_received(self, chunk):
+        pass
+
     def get(self):
         self.write({"healthy": True})
         self.flush()

@@ -17,7 +17,7 @@ def server_config(config_factory):
     config_factory.update("shutdown_delay", environ.get("PYAPP_SHUTDOWN_DELAY") or 3)
 
 
-def app_config(config_factory):
+def app_config(config_factory):  # pylint: disable=unused-argument
     pass
 
 

@@ -1,4 +1,4 @@
-from sys import exit
+import sys
 import asyncio
 import signal
 import time
@@ -26,7 +26,7 @@ class Server:
         log = dependencies.log
         lifecycle = dependencies.lifecycle
 
-        server = create_server(config, app, lifecycle_log)
+        create_server(config, app, lifecycle_log)
 
         lifecycle_log.info("Initialize: Start")
         lifecycle_log.info(f"Server: http://localhost:{options.port}")
@@ -43,9 +43,8 @@ class Server:
 
 
 class ConfigFactory:
-    def __init__(self, config_path):
+    def __init__(self, config_path):  # pylint: disable=unused-argument
         self._config = {}
-        pass
 
     def update(self, key, value):
         self._config[key] = value
@@ -98,7 +97,7 @@ def create_server(config, app, log):
     return server
 
 
-def handle_signal(server, log, sig, frame):
+def handle_signal(server, log, sig, frame):  # pylint: disable=unused-argument
     log.info("Signal: Interrupt")
 
     io_loop = ioloop.IOLoop.instance()
@@ -117,7 +116,9 @@ def handle_signal(server, log, sig, frame):
             io_loop.add_timeout(now + 1, stop_loop, server, deadline)
             return
 
-        pending_connection = len(server._connections)
+        pending_connection = len(
+            server._connections  # pylint: disable=protected-access
+        )
         if now < deadline and pending_connection > 0:
             log.info("Shutdown: Wait", connections=pending_connection)
             io_loop.add_timeout(now + 1, stop_loop, server, deadline)
@@ -131,8 +132,8 @@ def handle_signal(server, log, sig, frame):
             log.info("Shutdown: Start", delay=options.shutdown_delay)
             deadline = time.time() + options.shutdown_delay
             stop_loop(server, deadline)
-        except BaseException as e:
-            log.error(e)
-            exit(1)
+        except BaseException as err:  # pylint: disable=broad-except
+            log.error(err)
+            sys.exit(1)
 
     io_loop.add_callback_from_signal(shutdown)
