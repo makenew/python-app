@@ -27,7 +27,7 @@ def log_config(config_factory):
         "level": environ.get("LOG_LEVEL") or "info",
         "service": environ.get("LOG_SERVICE"),
         "system": environ.get("LOG_SYSTEM"),
-        "env": environ.get("LOG_SERVICE"),
+        "env": environ.get("LOG_ENV"),
         "name": environ.get("LOG_NAME"),
         "version": environ.get("LOG_VERSION"),
     }
