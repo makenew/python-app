@@ -112,7 +112,7 @@ Bootstrapping a New Project
    ::
 
      $ poetry install
-     $ poetry run bumpversion patch
+     $ poetry run bump2version patch
      $ git push
      $ git push --tags
 
@@ -254,10 +254,10 @@ Run tests on chages with
 Publishing
 ~~~~~~~~~~
 
-Use the bumpversion_ command to release a new version.
+Use the bump2version_ command to release a new version.
 Push the created git tag which will trigger a CircleCI publish job.
 
-.. _bumpversion: https://github.com/peritus/bumpversion
+.. _bump2version: https://github.com/c4urself/bump2version
 
 CircleCI Setup
 --------------
