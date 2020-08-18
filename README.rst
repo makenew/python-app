@@ -259,8 +259,8 @@ Push the created git tag which will trigger a CircleCI publish job.
 
 .. _bump2version: https://github.com/c4urself/bump2version
 
-CircleCI Setup
---------------
+CircleCI
+--------
 
 *CircleCI should already be configured: this section is for reference only.*
 
@@ -318,7 +318,6 @@ If set, CircleCI_ will deploy images built from master directly to Heroku_.
 
 .. _Amazon ECR: https://aws.amazon.com/ecr/
 .. _Bintray: https://bintray.com/
-.. _CircleCI: https://circleci.com/
 .. _CircleCI: https://circleci.com/
 .. _Codecov: https://codecov.io/
 .. _Docker Hub: https://hub.docker.com/
