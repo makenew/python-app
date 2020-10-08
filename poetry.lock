@@ -726,7 +726,7 @@ version = "1.12.1"
 
 [metadata]
 content-hash = "3cbf6dcb6969b69242b6a7236d327fb4610dbf4d064ef48a9dd37cc741106cc8"
-python-versions = "3.8.5"
+python-versions = "3.8.6"
 
 [metadata.files]
 appdirs = [

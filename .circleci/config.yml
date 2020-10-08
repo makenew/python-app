@@ -6,7 +6,7 @@ executors:
     parameters:
       tag:
         type: string
-        default: '3.8.5'
+        default: '3.8.6'
     working_directory: ~/build
     docker:
       - image: python:<< parameters.tag >>
@@ -85,7 +85,7 @@ jobs:
     parameters:
       tag:
         type: string
-        default: '3.8.5'
+        default: '3.8.6'
       is_alpine:
         type: boolean
         default: false
@@ -124,7 +124,7 @@ jobs:
     description: Publish Python package
     executor:
       name: python
-      tag: '3.8.5'
+      tag: '3.8.6'
     steps:
       - setup
       - install
@@ -142,7 +142,7 @@ jobs:
     description: Build Python package
     executor:
       name: python
-      tag: '3.8.5'
+      tag: '3.8.6'
     steps:
       - setup
       - install
@@ -218,7 +218,7 @@ jobs:
     description: Smoke test Server
     working_directory: ~/build
     docker:
-      - image: python:3.8.5
+      - image: python:3.8.6
       - image: $DOCKERHUB_REPOSITORY:ci.$CIRCLE_SHA1
         environment:
           PORT: 9001
@@ -267,12 +267,12 @@ workflows:
     jobs:
       - test:
           name: test
-          tag: '3.8.5'
+          tag: '3.8.6'
           upload_coverage: true
           <<: *filters
       - test:
           name: test-alpine
-          tag: '3.8.5-alpine'
+          tag: '3.8.6-alpine'
           is_alpine: true
           <<: *filters
       - package:
