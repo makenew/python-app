@@ -1,20 +1,13 @@
 Python App Skeleton
 ===================
 
-|PyPI| |Docker| |Codecov| |CircleCI|
+|PyPI| |GitHub Actions|
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/makenew-python-app.svg
    :target: https://pypi.python.org/pypi/makenew-python-app
    :alt: PyPI
-.. |Docker| image:: https://img.shields.io/docker/pulls/makenew/python-app.svg
-   :target: https://hub.docker.com/r/makenew/python-app
-   :alt: Docker
-.. |Codecov| image:: https://img.shields.io/codecov/c/github/makenew/python-app.svg
-   :target: https://codecov.io/gh/makenew/python-app
-   :alt: Codecov
-.. |CircleCI| image:: https://img.shields.io/circleci/project/github/makenew/python-app.svg
-   :target: https://circleci.com/gh/makenew/python-app
-   :alt: CircleCI
+.. |GitHub Actions| image:: https://github.com/makenew/python-app/workflows/main/badge.svg
+   :alt: GitHub Actions
 
 Package skeleton for an Python app.
 
