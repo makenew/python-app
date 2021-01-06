@@ -6,10 +6,13 @@ on:
     inputs:
       version:
         description: Version to cut
+  repository_dispatch:
+    types:
+      - version
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -52,5 +55,5 @@ jobs:
         run: poetry install
       - name: Cut version
         run: |
-          poetry run bump2version --sign-tags ${{ github.event.inputs.version }}
+          poetry run bump2version --sign-tags ${{ github.event.inputs.version }}${{ github.event.client_payload.version }}
           git push && git push --tags
