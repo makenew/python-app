@@ -64,3 +64,5 @@ ENTRYPOINT ["/opt/venv/bin/python"]
 CMD ["-m", "makenew_python_app"]
 
 USER python
+
+LABEL org.opencontainers.image.source https://github.com/makenew/python-app
