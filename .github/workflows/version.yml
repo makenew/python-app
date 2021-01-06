@@ -53,6 +53,12 @@ jobs:
           restore-keys: ${{ runner.os }}-poetry-
       - name: Install dependencies
         run: poetry install
+      - name: Lint
+        run: make lint
+      - name: Test
+        run: make test
+      - name: Build
+        run: make build
       - name: Cut version
         run: |
           poetry run bump2version --sign-tags ${{ github.event.inputs.version }}${{ github.event.client_payload.version }}
