@@ -82,12 +82,7 @@ Bootstrapping a New Project
    remove the git remote, remove upstream tags,
    and stage changes for commit.
 
-4. Create the required CircleCI environment variables with
-
-   ::
-
-       $ .circleci/envvars.sh
-
+4. Create the required GitHub repository secrets
 5. Review, commit, and push the changes to GitHub with
 
    ::
@@ -97,7 +92,7 @@ Bootstrapping a New Project
      $ git remote add origin git@github.com:<user>/<new-python-app>.git
      $ git push -u origin master
 
-6. Ensure the CircleCI build passes,
+6. Ensure the GitHub action passes,
    then publish the initial version of the package with
 
    ::
@@ -148,7 +143,7 @@ Usage
 Docker container
 ~~~~~~~~~~~~~~~~
 
-The service is distributed as a Docker container on Docker Hub.
+The service is distributed as a Docker container on GitHub Container Registry.
 To run locally, add configuration to `config/local.json`,
 then pull and run the image with
 
@@ -156,7 +151,7 @@ then pull and run the image with
 
     $ docker run --read-only --init --publish 8080:8080 \
       --volume "$(pwd)/config/local.json:/usr/src/app/config/local.json" \
-      makenew/python-app
+      ghcr.io/makenew/python-app
 
 Installation
 ------------
@@ -246,7 +241,7 @@ Publishing
 ~~~~~~~~~~
 
 Use the bump2version_ command to release a new version.
-Push the created git tag which will trigger a CircleCI publish job.
+Push the created git tag which will trigger a GitHub action.
 
 .. _bump2version: https://github.com/c4urself/bump2version
 
@@ -255,98 +250,36 @@ using a `workflow_dispatch on GitHub Actions`_.
 
 .. _workflow_dispatch on GitHub Actions: https://github.com/makenew/python-app/actions?query=workflow%3Aversion
 
-CircleCI
---------
-
-*CircleCI should already be configured: this section is for reference only.*
-
-The following environment variables must be set on CircleCI_:
-These may be set manually or by running the script ``./.circleci/envvars.sh``.
-
-- ``TWINE_USERNAME``: Username for publishing on PyPI.
-- ``TWINE_PASSWORD``: Password for publishing on PyPI.
-- ``CODECOV_TOKEN``: Codecov token for uploading coverage reports (optional).
-
 GitHub Actions
 --------------
 
 *GitHub Actions should already be configured: this section is for reference only.*
 
-The following secrets must be set on the GitHub repo.
+The following repository secrets must be set on GitHub Actions.
 
-- ``GPG_PRIVATE_KEY``: The `GPG private key`_.
-- ``GPG_PASSPHRASE``: The GPG key passphrase.
-- ``GIT_USER_NAME``: The name to set for Git commits.
-- ``GIT_USER_EMAIL``: The email to set for Git commits.
+- ``TWINE_USERNAME``: Username for publishing on PyPI.
+- ``TWINE_PASSWORD``: Password for publishing on PyPI.
+- ``GH_USER``: The GitHub user's username.
+- ``GH_TOKEN``: A personal access token for the user.
 
-.. _GPG private key: https://github.com/marketplace/actions/import-gpg#prerequisites
+These must be set manually.
 
-Codecov
-~~~~~~~
-
-If set, CircleCI_ will send code coverage reports to Codecov_.
-
-- ``CODECOV_TOKEN``: Codecov token for uploading coverage reports.
-
-Docker Hub
-~~~~~~~~~~
-
-If set, CircleCI_ will build, tag, and push images to `Docker Hub`_.
-
-- ``DOCKERHUB_REPOSITORY``: Docker Hub repository name.
-- ``DOCKERHUB_USERNAME``: Docker Hub username.
-- ``DOCKERHUB_PASSWORD``: Docker Hub password.
-
-Bintray
-~~~~~~~
-
-If set, CircleCI_ will build, tag, and push images to Bintray_.
-
-- ``BINTRAY_REGISTRY``: Bintray registry name.
-- ``BINTRAY_REPOSITORY``: Bintray repository name.
-- ``BINTRAY_USERNAME``: Bintray username.
-- ``BINTRAY_PASSWORD``: Bintray password (your API key).
-
-Amazon EC2 Container Registry (ECR)
+Secrets for Optional GitHub Actions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If set, CircleCI_ will build, tag, and push images to `Amazon ECR`_.
+The version and format GitHub actions
+require a user with write access to the repository
+including access to read and write packages.
+Set these additional secrets to enable the action:
 
-- ``AWS_ECR_REPOSITORY``: Amazon ECR repository name.
-- ``AWS_ACCOUNT_ID``: Amazon account ID.
-- ``AWS_DEFAULT_REGION``: AWS region.
-- ``AWS_ACCESS_KEY_ID``: AWS access key ID.
-- ``AWS_SECRET_ACCESS_KEY``: AWS secret access key.
+- ``GH_TOKEN``: A personal access token for the user.
+- ``GH_USER``: The GitHub user's username.
+- ``GIT_USER_NAME``: The name to set for Git commits.
+- ``GIT_USER_EMAIL``: The email to set for Git commits.
+- ``GPG_PASSPHRASE``: The GPG key passphrase.
+- ``GPG_PRIVATE_KEY``: The `GPG private key`_.
 
-Heroku
-~~~~~~
-
-If set, CircleCI_ will deploy images built from master directly to Heroku_.
-
-- ``HEROKU_APP``: Heroku application name.
-- ``HEROKU_TOKEN``: Heroku authentication token.
-
-.. _Amazon ECR: https://aws.amazon.com/ecr/
-.. _Bintray: https://bintray.com/
-.. _CircleCI: https://circleci.com/
-.. _Codecov: https://codecov.io/
-.. _Docker Hub: https://hub.docker.com/
-.. _Heroku: https://www.heroku.com/
-
-Docker
-~~~~~~
-
-The production Docker image is built on CircleCI from `.circleci/Dockerfile`:
-this Dockerfile can only be used with the CircleCI workflow.
-
-In rare cases, building an equivalent container locally may be useful.
-Build and run this local container with
-
-
-::
-
-    $ docker build -t makenew/python-app .
-    $ docker run --read-only --init --publish 80:8080 makenew/python-app
+.. _GPG private key: https://github.com/marketplace/actions/import-gpg#prerequisites
 
 Contributing
 ------------
