@@ -26,6 +26,8 @@ jobs:
           restore-keys: ${{ runner.os }}-poetry-
       - name: Install dependencies
         run: poetry install
+      - name: Build
+        run: make build
       - name: Publish
         run: make publish
         env:
