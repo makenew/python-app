@@ -48,8 +48,8 @@ RUN /opt/venv/bin/pip install dist/*.whl
 
 FROM base
 
-RUN addgroup -g 1000 python \
- && adduser -D -G python -u 1000 python
+RUN addgroup -g 10001 python \
+ && adduser -D -G python -u 10000 python
 
 COPY --from=install /opt/venv /opt/venv
 
