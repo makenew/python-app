@@ -31,9 +31,17 @@ RUN apk add --no-cache \
 
 RUN pip install "poetry==$POETRY_VERSION"
 
+FROM base as preinstall
+
+RUN apk add --no-cache sed
+COPY pyproject.toml ./
+RUN sed 's/^version = ".*"$/version = "0.0.0"/g' pyproject.toml > pyproject.toml.tmp \
+ && mv pyproject.toml.tmp pyproject.toml
+
 FROM poetry as build
 
-COPY pyproject.toml poetry.lock ./
+COPY poetry.lock ./
+COPY --from=preinstall /usr/src/app/pyproject.toml ./
 RUN poetry install --no-root --no-interaction --no-ansi
 COPY . ./
 RUN make build
@@ -41,7 +49,8 @@ RUN make build
 FROM poetry as install
 
 RUN python -m venv /opt/venv
-COPY pyproject.toml poetry.lock ./
+COPY poetry.lock ./
+COPY --from=preinstall /usr/src/app/pyproject.toml ./
 RUN poetry export -f requirements.txt | /opt/venv/bin/pip install -r /dev/stdin
 COPY --from=build /usr/src/app .
 RUN /opt/venv/bin/pip install dist/*.whl
