@@ -25,7 +25,7 @@ Features
 - Secure dependency management with Poetry_.
 - `Alpine Linux`_ based multi-stage Docker_ builds for optimized production images.
 - Images tagged using package version and commit checksum.
-- Images pushed to `Docker Hub`_, Heroku_, Bintray_ and the `Amazon EC2 Container Registry (ECR)`_.
+- Images pushed to `GitHub Container Registry`_.
 - Standardized JSON logging with structlog_.
 - Centralized dependency injection with pinject_.
 - Tornado_ with asyncio.
@@ -33,20 +33,18 @@ Features
 - Uncompromising code formatting with Black_.
 - pytest_ helps you write better programs.
 - Code coverage reporting with Codecov_.
-- Continuous unit and smoke testing and deployment with CircleCI_.
+- Continuous unit and smoke testing and deployment with `GitHub Actions`_.
 - `Keep a CHANGELOG`_.
 - Consistent coding with EditorConfig_.
 - Badges from Shields.io_.
 
 .. _Alpine Linux: https://alpinelinux.org/
-.. _Amazon EC2 Container Registry (ECR): https://aws.amazon.com/ecr/
-.. _Bintray: https://bintray.com/
 .. _Black: https://black.readthedocs.io/en/stable/
 .. _Codecov: https://codecov.io/
-.. _Docker Hub: https://hub.docker.com/
 .. _Docker: https://www.docker.com/
 .. _EditorConfig: https://editorconfig.org/
-.. _Heroku: https://www.heroku.com/
+.. _GitHub Actions: https://github.com/features/actions
+.. _GitHub Container Registry: https://github.com/features/packages
 .. _Keep a CHANGELOG: https://keepachangelog.com/
 .. _PyPI: https://pypi.python.org/pypi
 .. _Pylint: https://www.pylint.org/
