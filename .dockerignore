@@ -162,7 +162,7 @@ media
 static
 
 # Docker exceptions
-.circleci
+.github
 .dockerignore
 .editorconfig
 .git
