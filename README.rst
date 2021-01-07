@@ -7,6 +7,7 @@ Python App Skeleton
    :target: https://pypi.python.org/pypi/makenew-python-app
    :alt: PyPI
 .. |GitHub Actions| image:: https://github.com/makenew/python-app/workflows/main/badge.svg
+   :target: https://github.com/makenew/python-app/actions
    :alt: GitHub Actions
 
 Package skeleton for an Python app.
