@@ -164,7 +164,7 @@ Install it with
 
 ::
 
-    $ poetry install makenew_python_app
+    $ poetry add makenew_python_app
 
 .. _makenew_python_app: https://pypi.python.org/pypi/makenew-python-app
 .. _Python Package Index (PyPI): https://pypi.python.org/
