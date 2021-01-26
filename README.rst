@@ -10,7 +10,7 @@ Python App Skeleton
    :target: https://github.com/makenew/python-app/actions
    :alt: GitHub Actions
 
-Package skeleton for an Python app.
+Package skeleton for a Python app.
 
 Description
 -----------

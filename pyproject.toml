@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "makenew-python-app"
 version = "2.0.4"
-description = "Package skeleton for a python app."
+description = "Package skeleton for a Python app."
 authors = ["Evan Sosenko <razorx@evansosenko.com>"]
 license = "MIT"
 readme = "README.rst"
