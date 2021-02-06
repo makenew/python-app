@@ -18,6 +18,7 @@ config/secret.*
 
 # pytest-incremental
 .pytest-incremental
+.pytest-incremental.*
 deps.json
 
 # Byte-compiled / optimized / DLL files
