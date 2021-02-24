@@ -29,6 +29,7 @@ RUN apk add --no-cache \
       openssl-dev \
       libffi-dev
 
+RUN pip install --upgrade pip
 RUN pip install "poetry==$POETRY_VERSION"
 
 FROM base as preinstall
