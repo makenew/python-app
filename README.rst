@@ -24,7 +24,7 @@ Features
 
 - Publishing to PyPI_.
 - Secure dependency management with Poetry_.
-- `Alpine Linux`_ based multi-stage Docker_ builds for optimized production images.
+- Multi-stage Docker_ builds for optimized production images.
 - Images tagged using package version and commit checksum.
 - Images pushed to `GitHub Container Registry`_.
 - Standardized JSON logging with structlog_.
@@ -39,7 +39,6 @@ Features
 - Consistent coding with EditorConfig_.
 - Badges from Shields.io_.
 
-.. _Alpine Linux: https://alpinelinux.org/
 .. _Black: https://black.readthedocs.io/en/stable/
 .. _Codecov: https://codecov.io/
 .. _Docker: https://www.docker.com/

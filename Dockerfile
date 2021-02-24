@@ -1,14 +1,10 @@
-FROM python:3.9.1-alpine as base
+FROM python:3.9.1 as base
 
 WORKDIR /usr/src/app
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONHASHSEED=random \
     PYTHONUNBUFFERED=1
-
-RUN apk add --no-cache \
-      ca-certificates \
-      libstdc++
 
 FROM base as poetry
 
@@ -17,24 +13,10 @@ ENV PIP_DEFAULT_TIMEOUT=100 \
     PIP_NO_CACHE_DIR=1 \
     POETRY_VERSION=1.1.4
 
-RUN apk add --no-cache \
-      ca-certificates \
-      curl \
-      g++ \
-      gcc \
-      git \
-      make \
-      musl-dev \
-      openssh-client \
-      openssl-dev \
-      libffi-dev
-
-RUN pip install --upgrade pip
 RUN pip install "poetry==$POETRY_VERSION"
 
 FROM base as preinstall
 
-RUN apk add --no-cache sed
 COPY pyproject.toml ./
 RUN sed 's/^version = ".*"$/version = "0.0.0"/g' pyproject.toml > pyproject.toml.tmp \
  && mv pyproject.toml.tmp pyproject.toml
@@ -58,8 +40,8 @@ RUN /opt/venv/bin/pip install dist/*.whl
 
 FROM base
 
-RUN addgroup -g 10000 python \
- && adduser -D -G python -u 10000 python
+RUN addgroup --gid 10000 python \
+ && useradd --gid 10000 --uid 10000 python
 
 COPY --from=install /opt/venv /opt/venv
 
