@@ -10,11 +10,6 @@ RUN apk add --no-cache \
       ca-certificates \
       libstdc++
 
-RUN apk add --no-cache \
-      libressl-dev \
-      musl-dev \
-      libffi-dev
-
 FROM base as poetry
 
 ENV PIP_DEFAULT_TIMEOUT=100 \
