@@ -109,3 +109,11 @@ jobs:
         run: poetry install
       - name: Test
         run: make smoketest
+      - name: Remove CI container image
+        uses: bots-house/ghcr-delete-image-action@v1.0.0
+        if: always()
+        with:
+          owner: ${{ github.repository_owner }}
+          name: ${{ github.event.repository.name }}
+          tag: ${{ github.sha }}
+          token: ${{ secrets.GH_TOKEN }}
