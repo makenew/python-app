@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: 3.9.6
       - name: Setup Poetry
-        uses: gr1n/setup-poetry@v4
+        uses: gr1n/setup-poetry@v7
       - name: Setup cache
         uses: actions/cache@v2
         with:
@@ -38,7 +38,7 @@ jobs:
         with:
           python-version: 3.9.6
       - name: Setup Poetry
-        uses: gr1n/setup-poetry@v4
+        uses: gr1n/setup-poetry@v7
       - name: Setup cache
         uses: actions/cache@v2
         with:
@@ -98,7 +98,7 @@ jobs:
         with:
           python-version: 3.9.6
       - name: Setup Poetry
-        uses: gr1n/setup-poetry@v4
+        uses: gr1n/setup-poetry@v7
       - name: Setup cache
         uses: actions/cache@v2
         with:
@@ -110,7 +110,7 @@ jobs:
       - name: Test
         run: make smoketest
       - name: Remove CI container image
-        uses: bots-house/ghcr-delete-image-action@v1.0.0
+        uses: bots-house/ghcr-delete-image-action@v1.0.1
         if: always()
         with:
           owner: ${{ github.repository_owner }}
