@@ -10,7 +10,7 @@ repository = "https://github.com/makenew/python-app"
 include = ['poetry.lock']
 
 [tool.poetry.dependencies]
-python = "3.9.6"
+python = "3.10.0"
 pinject = "^0.14.1"
 pyhumps = "^3.0.2"
 python-rapidjson = "^1.0.0"
