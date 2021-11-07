@@ -13,10 +13,6 @@ config/secret.*
 # Environment versions file
 .versions
 
-# pytest-incremental
-.pytest-incremental
-deps.json
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
