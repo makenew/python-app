@@ -15,6 +15,7 @@
     "ms-python.python",
     "EditorConfig.EditorConfig"
   ],
+  "forwardPorts": [9000],
   "postCreateCommand": "poetry install",
   "remoteUser": "vscode"
 }
