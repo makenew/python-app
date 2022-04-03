@@ -17,6 +17,9 @@
     "EditorConfig.EditorConfig"
   ],
   "forwardPorts": [9000],
+  "portsAttributes": {
+    "9000": { "label": "App" }
+  },
   "postCreateCommand": "poetry install",
   "remoteUser": "vscode"
 }
