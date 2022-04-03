@@ -13,20 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.10.3
-      - name: Setup Poetry
-        uses: gr1n/setup-poetry@v7
-      - name: Setup cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
-          restore-keys: ${{ runner.os }}-poetry-
-      - name: Install dependencies
-        run: poetry install
+      - name: Setup
+        uses: ./.github/actions/setup
       - name: Test
         run: make test
   lint:
@@ -35,48 +23,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.10.3
-      - name: Setup Poetry
-        uses: gr1n/setup-poetry@v7
-      - name: Setup cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
-          restore-keys: ${{ runner.os }}-poetry-
-      - name: Install dependencies
-        run: poetry install
+      - name: Setup
+        uses: ./.github/actions/setup
       - name: Lint
         run: make lint
   build:
     runs-on: ubuntu-20.04
     timeout-minutes: 30
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Setup cache
-        uses: actions/cache@v2
-        id: cache
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Docker
+        uses: ./.github/actions/setup-docker
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ secrets.GH_USER }}
-          password: ${{ secrets.GH_TOKEN }}
+          registry_domain: ghcr.io
+          registry_username: ${{ secrets.GH_USER }}
+          registry_password: ${{ secrets.GH_TOKEN }}
       - name: Build
         uses: docker/build-push-action@v2
         with:
           push: true
+          platforms: linux/amd64,linux/arm64
           cache-from: 'type=local,src=/tmp/.buildx-cache'
           cache-to: 'type=local,dest=/tmp/.buildx-cache'
           tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
@@ -97,20 +64,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.10.3
-      - name: Setup Poetry
-        uses: gr1n/setup-poetry@v7
-      - name: Setup cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
-          restore-keys: ${{ runner.os }}-poetry-
-      - name: Install dependencies
-        run: poetry install
+      - name: Setup
+        uses: ./.github/actions/setup
       - name: Test
         run: make smoketest
       - name: Remove CI container image
