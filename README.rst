@@ -157,15 +157,15 @@ Installation
 ------------
 
 This package is also registered on the `Python Package Index (PyPI)`_
-as makenew_python_app_.
+as makenew-python-app_.
 
 Install it with
 
 ::
 
-    $ poetry add makenew_python_app
+    $ poetry add makenew-python-app
 
-.. _makenew_python_app: https://pypi.python.org/pypi/makenew-python-app
+.. _makenew-python-app: https://pypi.python.org/pypi/makenew-python-app
 .. _Python Package Index (PyPI): https://pypi.python.org/
 
 Development and Testing
