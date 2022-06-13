@@ -36,7 +36,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY --from=build /usr/src/app .
 RUN /opt/venv/bin/pip install dist/*.whl
 
-FROM base
+FROM base as app
 
 RUN addgroup --gid 10000 python \
  && useradd --gid 10000 --uid 10000 python
