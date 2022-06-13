@@ -10,22 +10,19 @@ FROM base as poetry
 
 ENV PIP_DEFAULT_TIMEOUT=100 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    PIP_NO_CACHE_DIR=1 \
     POETRY_VERSION=1.1.13
 
-RUN pip install "poetry==$POETRY_VERSION"
-
-FROM base as preinstall
-
-COPY pyproject.toml ./
-RUN sed 's/^version = ".*"$/version = "0.0.0"/g' pyproject.toml > pyproject.toml.tmp \
- && mv pyproject.toml.tmp pyproject.toml
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install "poetry==$POETRY_VERSION"
 
 FROM poetry as build
 
 COPY poetry.lock ./
-COPY --from=preinstall /usr/src/app/pyproject.toml ./
-RUN poetry install --no-root --no-interaction --no-ansi
+COPY pyproject.toml ./
+RUN --mount=type=cache,target=/root/.cache/pypoetry/cache \
+    --mount=type=cache,target=/root/.cache/pypoetry/artifacts \
+    poetry install --no-root --no-interaction --no-ansi
+
 COPY . ./
 RUN make build
 
@@ -33,8 +30,9 @@ FROM poetry as install
 
 RUN python -m venv /opt/venv
 COPY poetry.lock ./
-COPY --from=preinstall /usr/src/app/pyproject.toml ./
-RUN poetry export -f requirements.txt | /opt/venv/bin/pip install -r /dev/stdin
+COPY pyproject.toml ./
+RUN --mount=type=cache,target=/root/.cache/pip \
+    poetry export -f requirements.txt | /opt/venv/bin/pip install -r /dev/stdin
 COPY --from=build /usr/src/app .
 RUN /opt/venv/bin/pip install dist/*.whl
 
