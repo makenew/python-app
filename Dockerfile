@@ -10,7 +10,7 @@ FROM base as poetry
 
 ENV PIP_DEFAULT_TIMEOUT=100 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    POETRY_VERSION=1.1.13
+    POETRY_VERSION=1.1.14
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install "poetry==$POETRY_VERSION"
