@@ -14,7 +14,7 @@ python = "^3.10.0"
 pinject = "^0.14.1"
 pyhumps = "^3.0.2"
 python-rapidjson = "^1.0.0"
-structlog = "^21.1.0"
+structlog = "^22.1.0"
 tornado = "^6.0.4"
 
 [tool.poetry.dev-dependencies]
