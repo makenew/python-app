@@ -23,4 +23,4 @@ test:
 watch:
 	@poetry run ptw
 
-.PHONY: build docs test
+.PHONY: build format lint server smoketest test watch
