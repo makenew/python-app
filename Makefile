@@ -17,9 +17,6 @@ server:
 smoketest:
 	@curl http://localhost:9001/health
 
-publish:
-	@poetry run twine upload --skip-existing dist/*
-
 test:
 	@poetry run pytest --cov=./makenew_python_app
 
