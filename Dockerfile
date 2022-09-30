@@ -21,7 +21,7 @@ COPY poetry.lock ./
 COPY pyproject.toml ./
 RUN --mount=type=cache,target=/root/.cache/pypoetry/cache \
     --mount=type=cache,target=/root/.cache/pypoetry/artifacts \
-    poetry install --no-root --no-interaction --no-ansi
+    poetry install --sync --no-root --no-interaction --no-ansi
 
 COPY . ./
 RUN make build
