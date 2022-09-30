@@ -28,5 +28,5 @@ pytest-watch = "^4.2.0"
 twine = "^4.0.0"
 
 [build-system]
-requires = ["poetry>=1.0"]
+requires = ["poetry>=1.2"]
 build-backend = "poetry.masonry.api"
