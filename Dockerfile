@@ -34,7 +34,7 @@ COPY pyproject.toml ./
 RUN --mount=type=cache,target=/root/.cache/pip \
     poetry export -f requirements.txt | /opt/venv/bin/pip install -r /dev/stdin
 COPY --from=build /usr/src/app .
-RUN /opt/venv/bin/pip install dist/*.whl
+RUN /opt/venv/bin/pip install --no-deps dist/*.whl
 
 FROM base as app
 
