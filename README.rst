@@ -256,7 +256,7 @@ GitHub Actions
 The following repository secrets must be set on GitHub Actions.
 
 - ``PYPI_API_TOKEN``: API token for publishing on PyPI.
-- ``GH_USER``: The GitHub user's username.
+- ``GH_USER``: The GitHub user's username to pull and push containers.
 - ``GH_TOKEN``: A personal access token for the user.
 
 These must be set manually.
